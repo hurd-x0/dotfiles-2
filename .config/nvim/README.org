@@ -1,4 +1,4 @@
-#+My Vim Configuration
+#+TITLE: My Vim Configuration
 #+DESCRIPTION: I use vim mainly for javascript/typescript programming and sometimes python.
 #+PROPERTY: header-args :tangle init.vim
 
