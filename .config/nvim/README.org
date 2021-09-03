@@ -1,0 +1,343 @@
+#+My Vim Configuration
+#+DESCRIPTION: I use vim mainly for javascript/typescript programming and sometimes python.
+#+PROPERTY: header-args :tangle init.vim
+
+* Table Of Contents :toc:
+- [[#plugins][Plugins]]
+- [[#general-settings][General settings]]
+  - [[#set-the-leader-key][Set the leader key]]
+  - [[#use-jk-to-exit-out-of-insert-mode][Use jk to exit out of insert mode]]
+  - [[#good-to-have-these][Good to have these]]
+  - [[#set-tab-size][Set tab size]]
+  - [[#disable-wrap-mode][disable wrap mode]]
+  - [[#make-scrolling-easier][Make scrolling easier]]
+  - [[#put-the-new-splits-below-or-right-of-the-current][Put the new splits below or right of the current]]
+  - [[#set-theme][Set theme]]
+  - [[#highlight-bad-white-space-in-python-files][Highlight bad white space in python files]]
+- [[#keybindings][Keybindings]]
+  - [[#toggle-transparent-background][Toggle Transparent Background]]
+  - [[#better-splitting][Better Splitting]]
+  - [[#toggle-line-numbers][Toggle line numbers]]
+  - [[#copypaste-from-system-clipboard][Copy/Paste from system clipboard]]
+  - [[#move-selected-lines-in-visual-mode][Move selected lines in visual mode]]
+  - [[#better-split-resizing][Better split resizing]]
+  - [[#better-indenting][Better indenting]]
+  - [[#toggle-search-highlights][Toggle search highlights]]
+  - [[#comment-a-lineblock-of-code][Comment a line/block of code]]
+  - [[#move-between-buffers][Move between buffers]]
+  - [[#toggle-nvim-tree][Toggle nvim tree]]
+  - [[#search-through-files-using-fzf][Search through files using fzf]]
+- [[#plugin-settings][Plugin settings]]
+  - [[#lua-plugins][Lua plugins]]
+  - [[#nvim-tree][nvim-tree]]
+  - [[#cocnvim][coc.nvim]]
+
+* Plugins
+#+begin_src vimscript
+call plug#begin('~/.config/nvim/plugged')
+
+Plug 'windwp/nvim-autopairs'
+Plug 'ghifarit53/tokyonight-vim'
+Plug 'tpope/vim-surround'
+Plug 'mattn/emmet-vim'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'tpope/vim-commentary'
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'akinsho/nvim-bufferline.lua'
+Plug 'hoob3rt/lualine.nvim'
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'nvim-lua/plenary.nvim'
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+Plug 'ayu-theme/ayu-vim'
+Plug 'airblade/vim-rooter'
+Plug 'lifepillar/vim-gruvbox8'
+
+call plug#end()
+#+end_src
+
+* General settings
+** Set the leader key
+#+begin_src vimscript
+let mapleader = ";"
+#+end_src
+** Use jk to exit out of insert mode
+#+begin_src vimscript
+inoremap jk <ESC>
+#+end_src
+** Good to have these
+#+begin_src vimscript
+set hidden
+set number
+set cursorline
+set termguicolors
+set signcolumn=yes
+#+end_src
+** Set tab size
+#+begin_src vimscript
+set tabstop=2
+set shiftwidth=2
+set expandtab
+#+end_src
+** disable wrap mode
+#+begin_src vimscript
+set nowrap
+#+end_src
+** Make scrolling easier
+#+begin_src vimscript
+set scrolloff=7
+set sidescrolloff=20
+#+end_src
+** Put the new splits below or right of the current
+#+begin_src vimscript
+set splitbelow
+set splitright
+#+end_src
+** Set theme
+#+begin_src vimscript
+set bg=dark
+
+" let g:tokyonight_style = 'night' " available: night, storm
+" let g:tokyonight_enable_italic = 1
+" colorscheme tokyonight
+
+let ayucolor="mirage"
+colorscheme ayu
+
+" let g:gruvbox_contrast_light= 'hard'
+" let g:gruvbox_contrast_dark= 'hard'
+" colorscheme gruvbox
+#+end_src
+** Highlight bad white space in python files
+#+begin_src vimscript
+au BufRead,BufNewFile *.py match BadWhitespace /\s\+$/
+highlight BadWhitespace ctermbg=red guibg=darkred
+#+end_src
+* Keybindings
+** Toggle Transparent Background
+#+begin_src vimscript
+let t:is_transparent = 1
+function! Toggle_transparent_background()
+  if t:is_transparent == 0
+    set bg=dark
+    let t:is_transparent = 1
+  else
+    hi Normal guibg=NONE ctermbg=NONE
+    let t:is_transparent = 0
+  endif
+endfunction
+nnoremap <leader>tt :call Toggle_transparent_background()<CR>
+#+end_src
+** Better Splitting
+#+begin_src vimscript
+nnoremap <leader>vs :vsplit<CR>
+nnoremap <leader>hs :split<CR>
+#+end_src
+** Toggle line numbers
+#+begin_src vimscript
+nmap <leader>tn :set nu!<CR>
+#+end_src
+** Copy/Paste from system clipboard
+#+begin_src vimscript
+vmap <leader>y "+y
+nmap <leader>y "+y
+nmap <leader>p "+p
+#+end_src
+** Move selected lines in visual mode
+#+begin_src vimscript
+vnoremap K :move '<-2<CR>gv-gv
+vnoremap J :move '>+1<CR>gv-gv
+#+end_src
+** Better split resizing
+#+begin_src vimscript
+nnoremap <C-Up> :resize +2<CR>
+nnoremap <C-Down> :resize -2<CR>
+nnoremap <C-Left> :vertical resize +2<CR>
+nnoremap <C-Right> :vertical resize -2<CR>
+#+end_src
+** Better indenting
+#+begin_src vimscript
+vnoremap > >gv
+vnoremap < <gv
+#+end_src
+** Toggle search highlights
+#+begin_src vimscript
+nnoremap <leader>h :set hlsearch!<CR>
+#+end_src
+** Comment a line/block of code
+#+begin_src vimscript
+nmap <leader>c gcc
+vmap <leader>c gc
+#+end_src
+** Move between buffers
+#+begin_src vimscript
+nnoremap <Leader>b :BufferLineCyclePrev<CR>
+nnoremap <Leader>n :BufferLineCycleNext<CR>
+nnoremap <Leader>d :bd<CR>
+#+end_src
+** Toggle nvim tree
+#+begin_src vimscript
+nnoremap <leader>e :NvimTreeToggle<CR>
+#+end_src
+** Search through files using fzf
+#+begin_src vimscript
+nnoremap <leader>f :Files<CR>
+#+end_src
+* Plugin settings
+** Lua plugins
+#+begin_src lua
+lua << EOF
+require("lualine").setup({
+    options= {
+      theme= 'ayu_mirage'
+    }
+})
+require("nvim-web-devicons").setup()
+require("bufferline").setup()
+require("nvim-autopairs").setup()
+require("colorizer").setup()
+require("gitsigns").setup({
+  signs = {
+    add          = {hl = 'GitSignsAdd'   , text = '▎', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+    change       = {hl = 'GitSignsChange', text = '▎', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+    delete       = {hl = 'GitSignsDelete', text = '▎', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    topdelete    = {hl = 'GitSignsDelete', text = '▎', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn'},
+    changedelete = {hl = 'GitSignsChange', text = '▎', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+  },
+})
+require('nvim-treesitter.configs').setup {
+  ensure_installed = {"javascript", "typescript", "css", "html", "python", "rust"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+#+end_src
+
+** nvim-tree
+#+begin_src vimscript
+let g:nvim_tree_ignore = [ '.git', 'node_modules', '.cache' ]
+let g:nvim_tree_show_icons = {
+    \ 'git': 0,
+    \ 'folders': 1,
+    \ 'files': 1,
+    \ 'folder_arrows': 1,
+    \ }
+let g:nvim_tree_auto_open = 1
+let g:nvim_tree_quit_on_open = 1
+let g:nvim_tree_follow = 1
+let g:nvim_tree_hide_dotfiles = 1
+let g:nvim_tree_highlight_opened_files = 1
+let g:nvim_tree_tab_open = 0
+#+end_src
+
+** coc.nvim
+*** Good to have these
+#+begin_src vimscript
+set nobackup
+set nowritebackup
+set cmdheight=2
+set updatetime=300
+set shortmess+=c
+#+end_src
+*** Global extentions
+#+begin_src vimscript
+let g:coc_global_extensions = [
+      \'coc-css',
+      \'coc-json',
+      \'coc-tsserver',
+      \'coc-snippets',
+      \'coc-prettier',
+      \'coc-eslint',
+      \'coc-tailwindcss',
+      \'coc-prisma',
+      \]
+#+end_src
+*** Use tab for trigger completion with characters ahead and navigate.
+#+begin_src vimscript
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+#+end_src
+*** Use <c-space> to trigger completion.
+#+begin_src vimscript
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+#+end_src
+*** Make <CR> auto-select the first completion item
+#+begin_src vimscript
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+#+end_src
+*** GoTo code navigation.
+#+begin_src vimscript
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+#+end_src
+*** Use K to show documentation in preview window.
+#+begin_src vimscript
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+#+end_src
+*** Highlight the symbol and its references when holding the cursor.
+#+begin_src vimscript
+autocmd CursorHold * silent call CocActionAsync('highlight')
+#+end_src
+*** Symbol renaming.
+#+begin_src vimscript
+nmap <leader>rn <Plug>(coc-rename)
+#+end_src
+*** Applying codeAction to the selected region.
+Example: `<leader>aap` for current paragraph
+#+begin_src vimscript
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+#+end_src
+*** Remap <C-f> and <C-b> for scroll float windows/popups.
+#+begin_src vimscript
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+#+end_src
+*** Add `:Format` command to format current buffer.
+#+begin_src vimscript
+command! -nargs=0 Format :call CocAction('format')
+#+end_src
+*** Add `:OR` command for organize imports of the current buffer.
+#+begin_src vimscript
+command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+#+end_src
